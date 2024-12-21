@@ -6,20 +6,33 @@
 /*   By: bbenaali <bbenaali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 11:50:27 by bbenaali          #+#    #+#             */
-/*   Updated: 2024/12/20 16:02:52 by bbenaali         ###   ########.fr       */
+/*   Updated: 2024/12/21 09:28:19 by bbenaali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int ft_strlen(char *sttr)
+ char	*ft_strjoin(char *s1, char  *s2)
 {
-    int i;
+	int	len;
+	int	i;
+	char	*s3;
 
-	i = 0;
-    while (sttr[i] != '\0')
-        i++;
-    return (i);
+	if (!s1 && !s2)
+		return (NULL);
+	else if (!s1)
+		return (ft_strdup(s2));
+	else if (!s2)
+		return (ft_strdup(s1));
+	len = ft_strlen(s1) + ft_strlen(s2);
+	s3 = malloc(sizeof(char) * (len + 1));
+	if (s3 == NULL)
+		return (NULL);
+	ft_strcat(s3, s1);
+	i = ft_strlen(s3);
+	ft_strcat(&s3[i], s2);
+	// free(s1);
+	return (s3);
 }
 void	ft_strcat(char *dest, char *src)
 {
@@ -54,24 +67,25 @@ char	*ft_strdup(char *s1)
 }
 
 
-char	*ft_strjoin(char *s1, char  *s2)
+char	*ft_find_back(char const *s)
 {
-	int	len;
 	int	i;
-	char	*s3;
 
-	if (!s1 && !s2)
-		return (NULL);
-	else if (!s1)
-		return (ft_strdup(s2));
-	else if (!s2)
-		return (ft_strdup(s1));
-	len = ft_strlen(s1) + ft_strlen(s2);
-	s3 = malloc(sizeof(char) * (len + 1));
-	if (s3 == NULL)
-		return (NULL);
-	ft_strcat(s3, s1);
-	i = ft_strlen(s3);
-	ft_strcat(&s3[i], s2);
-	return (s3);
+	i = 0;
+	while (s[i] != '\0')
+	{
+		if (s[i] == '\n')
+			return ((char *)&s[i]);
+		i++;
+	}
+	if (s[i] == '\n')
+		return ((char *)&s[i]);
+	return (NULL);
+}
+int ft_strlen(char *sttr)
+{
+    int i = 0;
+    while (sttr[i] != '\0')
+        i++;
+    return (i);
 }

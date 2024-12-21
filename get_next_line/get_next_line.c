@@ -6,7 +6,7 @@
 /*   By: bbenaali <bbenaali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 08:20:47 by bbenaali          #+#    #+#             */
-/*   Updated: 2024/12/20 16:46:50 by bbenaali         ###   ########.fr       */
+/*   Updated: 2024/12/21 09:59:33 by bbenaali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ char *ft_putstr(char *sst)
     if(sst[s] == '\n')
         x = 2;
     line = malloc(s + x);
+    if (!line)
+        return (NULL);
     while (sst[i] && sst[i] != '\n')
     {
         line[i] = sst[i];
@@ -39,6 +41,7 @@ char *ft_putstr(char *sst)
         i++;
     }
     line[i] = '\0';
+    // free(sst);
     return(line);
 }
 
@@ -55,7 +58,7 @@ char *reset(char *str)
     while(str[i] && str[i] != '\n')
         i++;
     j = ft_strlen(str);
-    bombo = malloc(j - i + 1);
+    bombo = malloc(j - i); /// j - i + 1
     if (!bombo)
         return NULL;
     int a = 0;
@@ -68,47 +71,57 @@ char *reset(char *str)
     }
     bombo[a] = '\0';
     free(str);
-    return bombo;
+    return (bombo);
 }
 char *ft_read(char *x, int fd)
 {
     int a;
     char *buffer;
+    char *temp;
 
     a = 1;
     buffer = malloc((size_t)BUFFER_SIZE + 1);
     if (!buffer)
-        return NULL;
+        return (free(x), NULL);
     while (a != 0)
     {
         a = read(fd, buffer, BUFFER_SIZE);
         if (a == -1)
-            return (free(buffer), NULL);
+            return (free(x), free(buffer), NULL);
         buffer[a] = '\0';
-        x = ft_strjoin(x,buffer);
+        temp = ft_strjoin(x,buffer);
+        free(x);
+        x = temp;
+        // temp = NULL;
         if(ft_find_back(buffer))
             break;
     }
+    // free(temp);
     free(buffer);
+    // buffer = NULL;
     return (x);
 }
 char *get_next_line(int fd)
 {
-    char *line_bonus;
+    char *line;
     static char *x;
     int a;
 
     a = 1;
-    if(BUFFER_SIZE > 2147483647 || fd < 0)
+    if(fd < 0 || BUFFER_SIZE > 2147483647 || read(fd, 0, 0) < 0)
         return (NULL);
     if (!x)
         x = ft_strdup("");
     x = ft_read(x,fd);
-    if(!*x)
-        return (NULL);
-    line_bonus = ft_putstr(x);
+    if(x && !*x)
+        return (free(x), NULL);
+    line = ft_putstr(x);
+    if (!line)
+        return (free(x), NULL);
     x = reset(x);
-    return (line_bonus);
+    if (!x)
+        return (free(line), NULL);
+    return (line);
 }
 
 void v(void)
@@ -124,7 +137,9 @@ int main()
     // int fd = 3;
     // char *line;
     // printf("%d.%d\n",fd,fds);
-    printf("%s",get_next_line(fd));
+    char *a = get_next_line(fd);
+    printf("%s",a);
+    free(a);
     // close(fd);
     // printf("%s",get_next_line(fds));
     

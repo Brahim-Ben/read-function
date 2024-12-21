@@ -6,30 +6,13 @@
 /*   By: bbenaali <bbenaali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 11:29:36 by bbenaali          #+#    #+#             */
-/*   Updated: 2024/12/20 15:22:56 by bbenaali         ###   ########.fr       */
+/*   Updated: 2024/12/21 09:51:39 by bbenaali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 
-char	*ft_find_back(char const *s)
-{
-	int	i;
-
-	i = 0;
-	while (s[i] != '\0')
-	{
-		if (s[i] == '\n')
-			return ((char *)&s[i]);
-		i++;
-	}
-	if (s[i] == '\n')
-		return ((char *)&s[i]);
-	return (NULL);
-}
-
-
-char *ft_putstr(char *sst)
+char *ft_(char *sst)
 {
     int s;
     int i;
@@ -38,12 +21,14 @@ char *ft_putstr(char *sst)
 
     s = 0;
     i = 0;
-    x = 0;
+    x = 1;
     while(sst[s] && sst[s] != '\n')
         s++;
     if(sst[s] == '\n')
         x = 2;
     line = malloc(s + x);
+    if (!line)
+        return (NULL);
     while (sst[i] && sst[i] != '\n')
     {
         line[i] = sst[i];
@@ -55,87 +40,27 @@ char *ft_putstr(char *sst)
         i++;
     }
     line[i] = '\0';
+    // free(sst);
     return(line);
 }
-
-// int ft_strlen(char *sttr)
-// {
-//     int i = 0;
-//     while (sttr[i] != '\0')
-//         i++;
-//     return (i);
-// }
-// void	ft_strcat(char *dest, char *src)
-// {
-//     int i;
-
-//     i = 0;
-// 	while (src[i] != '\0')
-// 	{
-// 		dest[i] = src[i];
-// 		i++;
-// 	}
-// 	dest[i] = '\0';
-// }
-// char	*ft_strdup(char *s1)
-// {
-// 	int		i;
-// 	int	len;
-// 	char	*copy;
-
-// 	len = ft_strlen(s1);
-// 	i = 0;
-// 	copy = malloc (sizeof(char) * (len + 1));
-// 	if (copy == NULL)
-// 		return (NULL);
-// 	while (s1[i] != '\0')
-// 	{
-// 		copy[i] = s1[i];
-// 		i++;
-// 	}
-// 	copy[i] = '\0';
-// 	return (copy);
-// }
-
-
-// char	*ft_strjoin(char *s1, char  *s2)
-// {
-// 	int	len;
-// 	int	i;
-// 	char	*s3;
-
-// 	if (!s1 && !s2)
-// 		return (NULL);
-// 	else if (!s1)
-// 		return (ft_strdup(s2));
-// 	else if (!s2)
-// 		return (ft_strdup(s1));
-// 	len = ft_strlen(s1) + ft_strlen(s2);
-// 	s3 = malloc(sizeof(char) * (len + 1));
-// 	if (s3 == NULL)
-// 		return (NULL);
-// 	ft_strcat(s3, s1);
-// 	i = ft_strlen(s3);
-// 	ft_strcat(&s3[i], s2);
-// 	return (s3);
-// }
 
 char *reset(char *str)
 {
     int i;
     int j;
-    char *bombo;
-    int a;
 
     i = 0;
     j = 0;
-    a = 0;
+    char *bombo;
+    if (!*str)
+        return (free(str), NULL);
     while(str[i] && str[i] != '\n')
         i++;
     j = ft_strlen(str);
-    bombo = malloc(j - i + 1);
+    bombo = malloc(j - i); /// j - i + 1
     if (!bombo)
         return NULL;
+    int a = 0;
     i++;
     while(str[i])
     {
@@ -145,47 +70,53 @@ char *reset(char *str)
     }
     bombo[a] = '\0';
     free(str);
-    return bombo;
+    return (bombo);
 }
 char *ft_read(char *x, int fd)
 {
     int a;
     char *buffer;
+    char *temp;
 
     a = 1;
     buffer = malloc((size_t)BUFFER_SIZE + 1);
     if (!buffer)
-        return NULL;
+        return (free(x), NULL);
     while (a != 0)
     {
         a = read(fd, buffer, BUFFER_SIZE);
         if (a == -1)
-            return (free(buffer), NULL);
+            return (free(x), free(buffer), NULL);
         buffer[a] = '\0';
-        x = ft_strjoin(x,buffer);
+        temp = ft_strjoin(x,buffer);
+        free(x);
+        x = temp;
         if(ft_find_back(buffer))
             break;
     }
     free(buffer);
     return (x);
 }
-char *get_next_line_bonus(int fd)
+char *get_next_line(int fd)
 {
     char *line;
     static char *x[OPEN_MAX];
     int a;
 
     a = 1;
-    if(BUFFER_SIZE > 2147483647 || fd < 0)
+    if(fd < 0 || BUFFER_SIZE > 2147483647 || read(fd, 0, 0) < 0)
         return (NULL);
     if (!x[fd])
         x[fd] = ft_strdup("");
     x[fd] = ft_read(x[fd],fd);
     if(!*x[fd])
-        return (NULL);
-   
+        return (free(x[fd]), NULL);
     line = ft_putstr(x[fd]);
+    if (!line)
+        return (free(x[fd]), NULL);
     x[fd] = reset(x[fd]);
+    if (!x[fd])
+        return (free(line), NULL);
     return (line);
 }
 

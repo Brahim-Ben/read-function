@@ -6,7 +6,7 @@
 /*   By: bbenaali <bbenaali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 09:12:32 by bbenaali          #+#    #+#             */
-/*   Updated: 2024/12/20 15:08:37 by bbenaali         ###   ########.fr       */
+/*   Updated: 2024/12/21 08:59:18 by bbenaali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 	ft_strcat(s3, s1);
 	i = ft_strlen(s3);
 	ft_strcat(&s3[i], s2);
+	// free(s1);
 	return (s3);
 }
 void	ft_strcat(char *dest, char *src)

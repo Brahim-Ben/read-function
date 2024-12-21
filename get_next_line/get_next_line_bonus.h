@@ -6,7 +6,7 @@
 /*   By: bbenaali <bbenaali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 11:50:43 by bbenaali          #+#    #+#             */
-/*   Updated: 2024/12/20 16:04:17 by bbenaali         ###   ########.fr       */
+/*   Updated: 2024/12/21 09:04:10 by bbenaali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 #define BUFFER_SIZE 42
 #endif
 
-char    *get_next_line_bonus(int fd);
+char    *get_next_line(int fd);
 char    *ft_strjoin(char *s1, char  *s2);
 void    ft_strcat(char *dest, char *src);
 char    *ft_strdup(char *s1);

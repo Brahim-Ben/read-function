@@ -6,13 +6,13 @@
 /*   By: bbenaali <bbenaali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 11:29:36 by bbenaali          #+#    #+#             */
-/*   Updated: 2024/12/21 09:51:39 by bbenaali         ###   ########.fr       */
+/*   Updated: 2024/12/21 12:26:40 by bbenaali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 
-char *ft_(char *sst)
+char *ft_putstr(char *sst)
 {
     int s;
     int i;
@@ -52,14 +52,14 @@ char *reset(char *str)
     i = 0;
     j = 0;
     char *bombo;
-    if (!*str)
-        return (free(str), NULL);
+    // if (!*str)
+    //     return (free(str), NULL);
     while(str[i] && str[i] != '\n')
         i++;
     j = ft_strlen(str);
     bombo = malloc(j - i); /// j - i + 1
     if (!bombo)
-        return NULL;
+        return (NULL);
     int a = 0;
     i++;
     while(str[i])
@@ -109,14 +109,14 @@ char *get_next_line(int fd)
     if (!x[fd])
         x[fd] = ft_strdup("");
     x[fd] = ft_read(x[fd],fd);
-    if(!*x[fd])
-        return (free(x[fd]), NULL);
+    if(x[fd] && !*x[fd])
+        return (free(x[fd]), x[fd] = NULL, NULL);
     line = ft_putstr(x[fd]);
     if (!line)
-        return (free(x[fd]), NULL);
+        return (free(x[fd]), x[fd] = NULL, NULL);
     x[fd] = reset(x[fd]);
     if (!x[fd])
-        return (free(line), NULL);
+        return (free(line), x[fd] = NULL,free(line), NULL);
     return (line);
 }
 

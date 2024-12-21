@@ -6,7 +6,7 @@
 /*   By: bbenaali <bbenaali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 08:20:47 by bbenaali          #+#    #+#             */
-/*   Updated: 2024/12/21 09:59:33 by bbenaali         ###   ########.fr       */
+/*   Updated: 2024/12/21 15:24:57 by bbenaali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ char *ft_putstr(char *sst)
         i++;
     }
     if (sst[i] == '\n')
-    { 
+    {
         line[i] = '\n';
         i++;
     }
@@ -53,8 +53,8 @@ char *reset(char *str)
     i = 0;
     j = 0;
     char *bombo;
-    if (!*str)
-        return (free(str), NULL);
+    // if (!*str)
+    //     return (free(str), NULL);
     while(str[i] && str[i] != '\n')
         i++;
     j = ft_strlen(str);
@@ -70,7 +70,7 @@ char *reset(char *str)
         a++;
     }
     bombo[a] = '\0';
-    free(str);
+    free(str);  
     return (bombo);
 }
 char *ft_read(char *x, int fd)
@@ -82,7 +82,11 @@ char *ft_read(char *x, int fd)
     a = 1;
     buffer = malloc((size_t)BUFFER_SIZE + 1);
     if (!buffer)
-        return (free(x), NULL);
+    {
+        free(buffer);
+        // free(x);
+        return (NULL);
+    }
     while (a != 0)
     {
         a = read(fd, buffer, BUFFER_SIZE);
@@ -91,14 +95,16 @@ char *ft_read(char *x, int fd)
         buffer[a] = '\0';
         temp = ft_strjoin(x,buffer);
         free(x);
+        // x = NULL;
         x = temp;
-        // temp = NULL;
+        // free(temp);
+        temp = NULL;
         if(ft_find_back(buffer))
             break;
     }
     // free(temp);
     free(buffer);
-    // buffer = NULL;
+    buffer = NULL;
     return (x);
 }
 char *get_next_line(int fd)
@@ -108,49 +114,48 @@ char *get_next_line(int fd)
     int a;
 
     a = 1;
-    if(fd < 0 || BUFFER_SIZE > 2147483647 || read(fd, 0, 0) < 0)
+    if(fd < 0 || BUFFER_SIZE > 2147483647 || read(fd, NULL, 0) < 0)
         return (NULL);
     if (!x)
         x = ft_strdup("");
     x = ft_read(x,fd);
     if(x && !*x)
-        return (free(x), NULL);
+        return (free(x), x = NULL, NULL);
     line = ft_putstr(x);
     if (!line)
-        return (free(x), NULL);
+        return (free(line), x = NULL, NULL);
     x = reset(x);
     if (!x)
-        return (free(line), NULL);
+        return (free(x), x = NULL, NULL);
     return (line);
 }
 
-void v(void)
-{
-    system("leaks a.out");
-}
-int main()
-{
-    atexit(v);
-    // system("a.out");
-    int fd = open("bra.txt", O_CREAT | O_RDWR);
-    // int fds = open("ben.txt", O_CREAT | O_RDWR);
-    // int fd = 3;
-    // char *line;
-    // printf("%d.%d\n",fd,fds);
-    char *a = get_next_line(fd);
-    printf("%s",a);
-    free(a);
-    // close(fd);
-    // printf("%s",get_next_line(fds));
-    
-    
-    // while ((line = get_next_line(fd)))
-    // {
-    //     printf("line : %s", line);
-    //     free(line);
-    // }
-    // printf("%s",line);
-    // if (line == NULL)
-    //     printf("(null)");
-    // printf("%zd",i);
-}
+// void v(void)
+// {
+//     system("leaks a.out");
+// }
+// int main()
+// {
+   
+//     // system("a.out");
+//     int fd = open("bra.txt", O_CREAT | O_RDWR, 0777);
+//     // int fds = open("ben.txt", O_CREAT | O_RDWR);
+//     // int fd = 3;
+//     char *line;
+//     // printf("%d.%d\n",fd,fds);
+//     // char *a = get_next_line(fd);
+//     // printf("%s",a);
+//     // free(a);
+//     // close(fd);
+//     // printf("%s",get_next_line(fds));
+//     while ((line = get_next_line(fd)))
+//     {
+//         printf("line : %s", line);
+//         free(line);
+//     }
+//     // atexit(v);
+//     // printf("%s",line);
+//     // if (line == NULL)
+//     //     printf("(null)");
+//     // printf("%zd",i);
+// }

@@ -6,7 +6,7 @@
 /*   By: bbenaali <bbenaali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 11:50:27 by bbenaali          #+#    #+#             */
-/*   Updated: 2024/12/21 09:28:19 by bbenaali         ###   ########.fr       */
+/*   Updated: 2024/12/21 10:19:40 by bbenaali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 	else if (!s1)
 		return (ft_strdup(s2));
 	else if (!s2)
-		return (ft_strdup(s1));
+		return (free(s1), ft_strdup(s1));
 	len = ft_strlen(s1) + ft_strlen(s2);
 	s3 = malloc(sizeof(char) * (len + 1));
 	if (s3 == NULL)

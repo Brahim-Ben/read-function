@@ -1,51 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
+/*   get_next_line_bonus_utils.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbenaali <bbenaali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/20 11:50:27 by bbenaali          #+#    #+#             */
-/*   Updated: 2024/12/21 10:19:40 by bbenaali         ###   ########.fr       */
+/*   Created: 2024/12/22 15:54:41 by bbenaali          #+#    #+#             */
+/*   Updated: 2024/12/22 15:54:54 by bbenaali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
- char	*ft_strjoin(char *s1, char  *s2)
-{
-	int	len;
-	int	i;
-	char	*s3;
-
-	if (!s1 && !s2)
-		return (NULL);
-	else if (!s1)
-		return (ft_strdup(s2));
-	else if (!s2)
-		return (free(s1), ft_strdup(s1));
-	len = ft_strlen(s1) + ft_strlen(s2);
-	s3 = malloc(sizeof(char) * (len + 1));
-	if (s3 == NULL)
-		return (NULL);
-	ft_strcat(s3, s1);
-	i = ft_strlen(s3);
-	ft_strcat(&s3[i], s2);
-	// free(s1);
-	return (s3);
-}
-void	ft_strcat(char *dest, char *src)
-{
-    int i;
-
-    i = 0;
-	while (src[i] != '\0')
-	{
-		dest[i] = src[i];
-		i++;
-	}
-	dest[i] = '\0';
-}
 char	*ft_strdup(char *s1)
 {
 	int		i;
@@ -66,8 +32,28 @@ char	*ft_strdup(char *s1)
 	return (copy);
 }
 
+ char	*ft_strjoin(char *s1, char  *s2)
+{
+	int	len;
+	int	i;
+	char	*s3;
 
-char	*ft_find_back(char const *s)
+	if (!s1 && !s2)
+		return (NULL);
+	else if (!s1)
+		return (ft_strdup(s2));
+	else if (!s2)
+		return (ft_strdup(s1));
+	len = ft_strlen(s1) + ft_strlen(s2);
+	s3 = malloc(sizeof(char) * (len + 1));
+	if (s3 == NULL)
+		return (NULL);
+	ft_strcat(s3, s1);
+	i = ft_strlen(s3);
+	ft_strcat(&s3[i], s2);
+	return (s3);
+}
+char *find_new_line(char *s)
 {
 	int	i;
 
@@ -88,4 +74,17 @@ int ft_strlen(char *sttr)
     while (sttr[i] != '\0')
         i++;
     return (i);
+}
+
+void	ft_strcat(char *dest, char *src)
+{
+    int i;
+
+    i = 0;
+	while (src[i] != '\0')
+	{
+		dest[i] = src[i];
+		i++;
+	}
+	dest[i] = '\0';
 }

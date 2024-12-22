@@ -5,141 +5,160 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbenaali <bbenaali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/20 11:29:36 by bbenaali          #+#    #+#             */
-/*   Updated: 2024/12/21 12:26:40 by bbenaali         ###   ########.fr       */
+/*   Created: 2024/12/22 15:53:02 by bbenaali          #+#    #+#             */
+/*   Updated: 2024/12/22 16:04:02 by bbenaali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "get_next_line_bonus.h"
 
-char *ft_putstr(char *sst)
+char *ft_before(char *str)
 {
-    int s;
     int i;
+    char *bombo;
     int x;
-    char *line;
-
-    s = 0;
-    i = 0;
+    
     x = 1;
-    while(sst[s] && sst[s] != '\n')
-        s++;
-    if(sst[s] == '\n')
+    i = 0;
+    while(str[i] && str[i] != '\n')
+        i++;
+    // i = find_new_line(str);
+    // j = ft_strlen(str);
+    if(str[i] == '\n')
         x = 2;
-    line = malloc(s + x);
-    if (!line)
-        return (NULL);
-    while (sst[i] && sst[i] != '\n')
+    bombo = malloc(i + x);
+    if(!bombo)
+        return (free(str), free(bombo), NULL);
+    i = 0;
+    // printf("%d\n",i);
+    while(str[i] && str[i] != '\n')
     {
-        line[i] = sst[i];
+       bombo[i] = str[i];
         i++;
     }
-    if (sst[i] == '\n')
-    { 
-        line[i] = '\n';
+    if (str[i] == '\n')
+    {
+        bombo[i] = '\n';
         i++;
     }
-    line[i] = '\0';
-    // free(sst);
-    return(line);
+    bombo[i] = '\0';
+    // free(str);
+    return (bombo);
 }
 
-char *reset(char *str)
+char *after(char *sttr)
 {
     int i;
     int j;
+    char *s;
 
     i = 0;
+    while(sttr[i] && sttr[i] != '\n')
+        i++;
+    j = ft_strlen(sttr);
+    // printf("%d\n",i);
+    s = malloc(j - i + 1);
+    if(!s)
+        return (free(s), free(sttr), NULL);
+    if(sttr[i] == '\n')
+        i++;
     j = 0;
-    char *bombo;
-    // if (!*str)
-    //     return (free(str), NULL);
-    while(str[i] && str[i] != '\n')
-        i++;
-    j = ft_strlen(str);
-    bombo = malloc(j - i); /// j - i + 1
-    if (!bombo)
-        return (NULL);
-    int a = 0;
-    i++;
-    while(str[i])
+    while(sttr[i] != '\0')
     {
-        bombo[a] = str[i];
+        s[j] = sttr[i];
+        j++;
         i++;
-        a++;
     }
-    bombo[a] = '\0';
-    free(str);
-    return (bombo);
+    s[j] = '\0';
+    // printf("%s\n", s);
+    free(sttr);
+    // sttr = NULL;
+    // printf("%s\n",sttr);
+    return (s);
 }
-char *ft_read(char *x, int fd)
+
+char *ft_read(int fd, char *x)
 {
     int a;
     char *buffer;
     char *temp;
-
+    
     a = 1;
-    buffer = malloc((size_t)BUFFER_SIZE + 1);
+    buffer = malloc(BUFFER_SIZE + 1);
     if (!buffer)
-        return (free(x), NULL);
-    while (a != 0)
+        return (NULL);
+    while (a)
     {
         a = read(fd, buffer, BUFFER_SIZE);
-        if (a == -1)
-            return (free(x), free(buffer), NULL);
+        if (a < 0)
+        {
+            free(buffer);
+            return (free(x), NULL);
+        }
         buffer[a] = '\0';
-        temp = ft_strjoin(x,buffer);
-        free(x);
-        x = temp;
-        if(ft_find_back(buffer))
+        temp = x;
+        x = ft_strjoin(temp, buffer);
+        free(temp);
+        // if (!temp)
+        //     return (free(temp),free(x), NULL);
+        // x = temp;
+        if( !x || a == 0 ||  find_new_line(buffer))
             break;
-    }
+    } 
+    // if(!*x)
+    //     return (free(x), free(buffer), NULL);
     free(buffer);
     return (x);
 }
+
+
+
+
 char *get_next_line(int fd)
 {
-    char *line;
     static char *x[OPEN_MAX];
-    int a;
+    // int a;
+    // char *buffer;
+    // char *temp;
+    char *line;
+    // char *sk;
 
-    a = 1;
-    if(fd < 0 || BUFFER_SIZE > 2147483647 || read(fd, 0, 0) < 0)
-        return (NULL);
-    if (!x[fd])
-        x[fd] = ft_strdup("");
-    x[fd] = ft_read(x[fd],fd);
-    if(x[fd] && !*x[fd])
+    // a = 1;
+    if(fd < 0 ||  read(fd, 0, 0) < 0 || BUFFER_SIZE <= 0)
         return (free(x[fd]), x[fd] = NULL, NULL);
-    line = ft_putstr(x[fd]);
-    if (!line)
+    // if(x == NULL)
+    //     x = ft_strdup("");
+    x[fd] = ft_read(fd, x[fd]);
+    // buffer = malloc(BUFFER_SIZE + 1);
+    // if (!buffer)
+    //     return (NULL);
+    // while (a != 0)
+    // {
+    //     a = read(fd, buffer, BUFFER_SIZE);
+    //     if (a < 0)
+    //         return (free(x), free(buffer), NULL);
+    //     buffer[a] = '\0';
+    //    temp = x;
+    //     x = ft_strjoin(temp, buffer);
+    //     free(temp);
+    //     // temp = NULL;
+    //     // if (!temp)
+    //     //     return (free(temp), NULL);
+    //     // temp = x;
+    //     // x = temp;
+    //     // temp = NULL;
+    //     if(find_new_line(buffer))
+    //         break;
+    // } 
+    if(!x[fd] || !*x[fd])
         return (free(x[fd]), x[fd] = NULL, NULL);
-    x[fd] = reset(x[fd]);
-    if (!x[fd])
-        return (free(line), x[fd] = NULL,free(line), NULL);
+    // free(buffer);
+    line = ft_before(x[fd]);
+    if(!line)
+        return (x[fd] = NULL);
+    x[fd] = after(x[fd]);
+    // if(!x)
+    //     return (free(x), NULL);
     return (line);
 }
-
-// int main()
-// {
-//     int fd = open("bra.txt", O_CREAT | O_RDWR);
-//     int fds = open("ben.txt", O_CREAT | O_RDWR);
-//     // int fd = 3;
-//     // char *linec;
-//     printf("%d.%d\n",fd,fds);
-//     // size_t i = ft_strlen("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nisi tellus, laoreet nec tortor in, iaculis luctus erat. Nullam quis lacus vitae risus volutpat finibus. Donec vitae elit quis nisi consequat sagittis nec ac dolor. Nunc vehicula rutrum lectus, et dignissim quam hendrerit non. Nam congue malesuada diam, vestibulum sagittis orci malesuada ut. Donec imperdiet diam erat, sit amet dapibus dolor convallis volutpat. Mauris a sagittis felis, nec accumsan lorem. Nulla eu orci venenatis odio venenatis lacinia. Nullam nec turpis ut diam pharetra pellentesque. Maecenas dapibus dui ac turpis dictum mollis. Vivamus turpis nibh, scelerisque eu consectetur sed, congue eu enim. Proin consequat neque a arcu pulvinar ornare maximus sit amet nibh.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nisi tellus, laoreet nec tortor in, iaculis luctus erat. Nullam quis lacus vitae risus volutpat finibus. Donec vitae elit quis nisi consequat sagittis nec ac dolor. Nunc vehicula rutrum lectus, et dignissim quam hendrerit non. Nam congue malesuada diam, vestibulum sagittis orci malesuada ut. Donec imperdiet diam erat, sit amet dapibus dolor convallis volutpat. Mauris a sagittis felis, nec accumsan lorem. Nulla eu orci venenatis odio venenatis lacinia. Nullam nec turpis ut diam pharetra pellentesque. Maecenas dapibus dui ac turpis dictum mollis. Vivamus turpis nibh, scelerisque eu consectetur sed, congue eu enim. Proin consequat neque a arcu pulvinar ornare maximus sit amet nibh.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nisi tellus, laoreet nec tortor in, iaculis luctus erat. Nullam quis lacus vitae risus volutpat finibus. Donec vitae elit quis nisi consequat sagittis nec ac dolor. Nunc vehicula rutrum lectus, et dignissim quam hendrerit non. Nam congue malesuada diam, vestibulum sagittis orci malesuada ut. Donec imperdiet diam erat, sit amet dapibus dolor convallis volutpat. Mauris a sagittis felis, nec accumsan lorem. Nulla eu orci venenatis odio venenatis lacinia. Nullam nec turpis ut diam pharetra pellentesque. Maecenas dapibus dui ac turpis dictum mollis. Vivamus turpis nibh, scelerisque eu consectetur sed, congue eu enim. Proin consequat neque a arcu pulvinar ornare maximus sit amet nibh.");
-
-//     printf("%s",get_next_line_bonus(fd));
-//     printf("%s",get_next_line_bonus(fds));
-    
-    
-//     // while ((line = get_next_line(fd)))
-//     // {
-//     //     printf("line : %s", line);
-//     //     free(line);
-//     // }
-//     // printf("%s",line);
-//     // if (line == NULL)
-//     //     printf("(null)");
-//     // printf("%zd",i);
-// }

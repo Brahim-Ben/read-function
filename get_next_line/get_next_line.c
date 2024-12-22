@@ -5,157 +5,245 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbenaali <bbenaali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/20 08:20:47 by bbenaali          #+#    #+#             */
-/*   Updated: 2024/12/21 15:24:57 by bbenaali         ###   ########.fr       */
+/*   Created: 2024/12/22 07:57:43 by bbenaali          #+#    #+#             */
+/*   Updated: 2024/12/22 16:01:41 by bbenaali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
 
-char *ft_putstr(char *sst)
+char *ft_before(char *str)
 {
-    int s;
     int i;
+    char *bombo;
     int x;
-    char *line;
-
-    s = 0;
-    i = 0;
+    
     x = 1;
-    while(sst[s] && sst[s] != '\n')
-        s++;
-    if(sst[s] == '\n')
+    i = 0;
+    while(str[i] && str[i] != '\n')
+        i++;
+    // i = find_new_line(str);
+    // j = ft_strlen(str);
+    if(str[i] == '\n')
         x = 2;
-    line = malloc(s + x);
-    if (!line)
-        return (NULL);
-    while (sst[i] && sst[i] != '\n')
+    bombo = malloc(i + x);
+    if(!bombo)
+        return (free(str), free(bombo), NULL);
+    i = 0;
+    // printf("%d\n",i);
+    while(str[i] && str[i] != '\n')
     {
-        line[i] = sst[i];
+       bombo[i] = str[i];
         i++;
     }
-    if (sst[i] == '\n')
+    if (str[i] == '\n')
     {
-        line[i] = '\n';
+        bombo[i] = '\n';
         i++;
     }
-    line[i] = '\0';
-    // free(sst);
-    return(line);
+    bombo[i] = '\0';
+    // free(str);
+    return (bombo);
 }
 
-char *reset(char *str)
+char *after(char *sttr)
 {
     int i;
     int j;
+    char *s;
 
     i = 0;
+    while(sttr[i] && sttr[i] != '\n')
+        i++;
+    j = ft_strlen(sttr);
+    // printf("%d\n",i);
+    s = malloc(j - i + 1);
+    if(!s)
+        return (free(s), free(sttr), NULL);
+    if(sttr[i] == '\n')
+        i++;
     j = 0;
-    char *bombo;
-    // if (!*str)
-    //     return (free(str), NULL);
-    while(str[i] && str[i] != '\n')
-        i++;
-    j = ft_strlen(str);
-    bombo = malloc(j - i); /// j - i + 1
-    if (!bombo)
-        return NULL;
-    int a = 0;
-    i++;
-    while(str[i])
+    while(sttr[i] != '\0')
     {
-        bombo[a] = str[i];
+        s[j] = sttr[i];
+        j++;
         i++;
-        a++;
     }
-    bombo[a] = '\0';
-    free(str);  
-    return (bombo);
+    s[j] = '\0';
+    // printf("%s\n", s);
+    free(sttr);
+    // sttr = NULL;
+    // printf("%s\n",sttr);
+    return (s);
 }
-char *ft_read(char *x, int fd)
+
+char *ft_read(int fd, char *x)
 {
     int a;
     char *buffer;
     char *temp;
-
+    
     a = 1;
-    buffer = malloc((size_t)BUFFER_SIZE + 1);
+    buffer = malloc(BUFFER_SIZE + 1);
     if (!buffer)
-    {
-        free(buffer);
-        // free(x);
         return (NULL);
-    }
-    while (a != 0)
+    while (a)
     {
         a = read(fd, buffer, BUFFER_SIZE);
-        if (a == -1)
-            return (free(x), free(buffer), NULL);
+        if (a < 0)
+        {
+            free(buffer);
+            return (free(x), NULL);
+        }
         buffer[a] = '\0';
-        temp = ft_strjoin(x,buffer);
-        free(x);
-        // x = NULL;
-        x = temp;
-        // free(temp);
-        temp = NULL;
-        if(ft_find_back(buffer))
+        temp = x;
+        x = ft_strjoin(temp, buffer);
+        free(temp);
+        // if (!temp)
+        //     return (free(temp),free(x), NULL);
+        // x = temp;
+        if( !x || a == 0 ||  find_new_line(buffer))
             break;
-    }
-    // free(temp);
+    } 
+    // if(!*x)
+    //     return (free(x), free(buffer), NULL);
     free(buffer);
-    buffer = NULL;
     return (x);
 }
+
+
+
+
 char *get_next_line(int fd)
 {
-    char *line;
     static char *x;
-    int a;
+    // int a;
+    // char *buffer;
+    // char *temp;
+    char *line;
+    // char *sk;
 
-    a = 1;
-    if(fd < 0 || BUFFER_SIZE > 2147483647 || read(fd, NULL, 0) < 0)
-        return (NULL);
-    if (!x)
-        x = ft_strdup("");
-    x = ft_read(x,fd);
-    if(x && !*x)
+    // a = 1;
+    if(fd < 0 ||  read(fd, 0, 0) < 0 || BUFFER_SIZE <= 0)
         return (free(x), x = NULL, NULL);
-    line = ft_putstr(x);
-    if (!line)
-        return (free(line), x = NULL, NULL);
-    x = reset(x);
-    if (!x)
+    // if(x == NULL)
+    //     x = ft_strdup("");
+    x = ft_read(fd, x);
+    // buffer = malloc(BUFFER_SIZE + 1);
+    // if (!buffer)
+    //     return (NULL);
+    // while (a != 0)
+    // {
+    //     a = read(fd, buffer, BUFFER_SIZE);
+    //     if (a < 0)
+    //         return (free(x), free(buffer), NULL);
+    //     buffer[a] = '\0';
+    //    temp = x;
+    //     x = ft_strjoin(temp, buffer);
+    //     free(temp);
+    //     // temp = NULL;
+    //     // if (!temp)
+    //     //     return (free(temp), NULL);
+    //     // temp = x;
+    //     // x = temp;
+    //     // temp = NULL;
+    //     if(find_new_line(buffer))
+    //         break;
+    // } 
+    if(!x || !*x)
         return (free(x), x = NULL, NULL);
+    // free(buffer);
+    line = ft_before(x);
+    if(!line)
+        return (x = NULL);
+    x = after(x);
+    // if(!x)
+    //     return (free(x), NULL);
     return (line);
 }
 
-// void v(void)
+
+
+
+
+
+
+// char *read_and_append(int fd, char *x)
+// {
+//     char    *buffer;
+//     char    *temp;
+//     int     bytes_read;
+
+//     buffer = malloc(BUFFER_SIZE + 1);
+//     if (!buffer)
+//         return (NULL);
+//     while (1)
+//     {
+//         bytes_read = read(fd, buffer, BUFFER_SIZE);
+//         if (bytes_read < 0)
+//         {
+//             free(buffer);
+//             return (free(x), NULL);
+//         }
+//         buffer[bytes_read] = '\0';
+//         temp = x;
+//         x = ft_strjoin(temp, buffer);
+//         free(temp);
+//         if (!x || bytes_read == 0 || find_new_line(buffer))
+//             break;
+//     }
+//     free(buffer);
+//     return (x);
+// }
+
+// char *get_next_line(int fd)
+// {
+//     static char *x;
+//     char        *line;
+
+//     if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+//         return (free(x), x = NULL, NULL);
+//     x = read_and_append(fd, x);
+//     if (!x || !*x)
+//         return (free(x), x = NULL, NULL);
+//     line = ft_before(x);
+//     if (!line)
+//         return (free(x), x = NULL);
+//     x = after(x);
+//     return (line);
+// }
+
+
+
+
+
+// void v()
 // {
 //     system("leaks a.out");
 // }
-// int main()
+// int main ()
 // {
-   
-//     // system("a.out");
-//     int fd = open("bra.txt", O_CREAT | O_RDWR, 0777);
-//     // int fds = open("ben.txt", O_CREAT | O_RDWR);
-//     // int fd = 3;
+//     atexit(v);
+//     int fd = open("text.txt", O_CREAT | O_RDWR, 0777);
 //     char *line;
-//     // printf("%d.%d\n",fd,fds);
-//     // char *a = get_next_line(fd);
-//     // printf("%s",a);
-//     // free(a);
-//     // close(fd);
-//     // printf("%s",get_next_line(fds));
-//     while ((line = get_next_line(fd)))
+//     // printf("%s", get_next_line(fd));
+//     // printf("%s", get_next_line(fd));
+//     // printf("%s", get_next_line(fd));
+//     // printf("%s", get_next_line(fd));
+//     // printf("%s", get_next_line(fd));
+//     // printf("%s", get_next_line(fd));
+//     while((line = get_next_line(fd)))
 //     {
-//         printf("line : %s", line);
+//         printf("%s", line);
 //         free(line);
 //     }
-//     // atexit(v);
-//     // printf("%s",line);
 //     // if (line == NULL)
-//     //     printf("(null)");
-//     // printf("%zd",i);
+//     //     printf("NULL");
 // }
+
+
+        // tmp = x;
+        // x = ft_strjoin(tmp, buffer);
+        // free(tmp);
+        // tmp = NULL;

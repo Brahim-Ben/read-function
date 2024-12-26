@@ -6,7 +6,7 @@
 /*   By: bbenaali <bbenaali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 08:07:04 by bbenaali          #+#    #+#             */
-/*   Updated: 2024/12/22 12:34:26 by bbenaali         ###   ########.fr       */
+/*   Updated: 2024/12/26 18:13:05 by bbenaali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 char	*ft_strdup(char *s1)
 {
 	int		i;
-	int	len;
+	int		len;
 	char	*copy;
 
 	len = ft_strlen(s1);
 	i = 0;
-	copy = malloc (sizeof(char) * (len + 1));
+	copy = (char *)malloc (sizeof(char) * (len + 1));
 	if (copy == NULL)
 		return (NULL);
 	while (s1[i] != '\0')
@@ -32,10 +32,10 @@ char	*ft_strdup(char *s1)
 	return (copy);
 }
 
- char	*ft_strjoin(char *s1, char  *s2)
+char	*ft_strjoin(char *s1, char *s2)
 {
-	int	len;
-	int	i;
+	int		len;
+	int		i;
 	char	*s3;
 
 	if (!s1 && !s2)
@@ -45,7 +45,7 @@ char	*ft_strdup(char *s1)
 	else if (!s2)
 		return (ft_strdup(s1));
 	len = ft_strlen(s1) + ft_strlen(s2);
-	s3 = malloc(sizeof(char) * (len + 1));
+	s3 = (char *)malloc(sizeof(char) * (len + 1));
 	if (s3 == NULL)
 		return (NULL);
 	ft_strcat(s3, s1);
@@ -53,7 +53,8 @@ char	*ft_strdup(char *s1)
 	ft_strcat(&s3[i], s2);
 	return (s3);
 }
-char *find_new_line(char *s)
+
+char	*find_new_line(char *s)
 {
 	int	i;
 
@@ -64,23 +65,24 @@ char *find_new_line(char *s)
 			return ((char *)&s[i]);
 		i++;
 	}
-	if (s[i] == '\n')
-		return ((char *)&s[i]);
 	return (NULL);
 }
-int ft_strlen(char *sttr)
+
+int	ft_strlen(char *sttr)
 {
-    int i = 0;
-    while (sttr[i] != '\0')
-        i++;
-    return (i);
+	int	i;
+
+	i = 0;
+	while (sttr[i] != '\0')
+		i++;
+	return (i);
 }
 
 void	ft_strcat(char *dest, char *src)
 {
-    int i;
+	int	i;
 
-    i = 0;
+	i = 0;
 	while (src[i] != '\0')
 	{
 		dest[i] = src[i];

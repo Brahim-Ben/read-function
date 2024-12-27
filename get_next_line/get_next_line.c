@@ -72,11 +72,10 @@ static char	*ft_read(int fd, char *x)
 	char		*buffer;
 	char		*temp;
 
-	a = 1;
 	buffer = (char *)malloc(sizeof(char) * ((size_t)BUFFER_SIZE + 1));
 	if (!buffer)
 		return (free(x), NULL);
-	while (a)
+	while (1)
 	{
 		a = read(fd, buffer, BUFFER_SIZE);
 		if (a < 0)
@@ -86,7 +85,11 @@ static char	*ft_read(int fd, char *x)
 		x = ft_strjoin(temp, buffer);
 		free (temp);
 		if (!x || a == 0 || find_new_line(buffer))
+		{
+			if(!x)
+				free(x);
 			break ;
+		}
 	}
 	free (buffer);
 	return (x);
